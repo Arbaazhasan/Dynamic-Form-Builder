@@ -1,5 +1,5 @@
 import { catchAsyncError } from "../middleware/catchAsyncError.js";
-import { adminModel } from "../model/admin.model.js";
+import { Admin } from "../model/admin.model.js";
 
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
@@ -11,13 +11,13 @@ export const registerAdmin = catchAsyncError(async (req, res, next) => {
 
     if (!name || !email || !password) return next(new ErrorHandler("All fields are required", 400));
 
-    const isAdminExists = await adminModel.findOne({ email });
+    const isAdminExists = await Admin.findOne({ email });
 
     if (isAdminExists) return next(new ErrorHandler("Email already registered", 400))
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const admin = await adminModel.create({
+    const admin = await Admin.create({
         name,
         email,
         password: hashedPassword,
@@ -48,7 +48,7 @@ export const loginAdmin = catchAsyncError(async (req, res, next) => {
     if (!email || !password) return next(new ErrorHandler("Email and password are required", 400));
 
 
-    const admin = await adminModel.findOne({ email }).select("+password");
+    const admin = await Admin.findOne({ email }).select("+password");
 
     if (!admin) return next(new ErrorHandler("Invalid email or password", 400));
 

@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import { catchAsyncError } from "./catchAsyncError.js";
 import ErrorHandler from "../utils/errorHandler.js";
-import { adminModel } from "../model/admin.model.js";
+import { Admin } from "../model/admin.model.js";
 
 export const adminAuthentication = catchAsyncError(async (req, res, next) => {
 
@@ -14,7 +14,7 @@ export const adminAuthentication = catchAsyncError(async (req, res, next) => {
 
     if (!decoded) return next(new ErrorHandler("Invalid or expired session!", 401));
 
-    const admin = await adminModel.findById(decoded._id);
+    const admin = await Admin.findById(decoded._id);
 
     if (!admin) return next(new ErrorHandler("Admin not found!", 404));
 
